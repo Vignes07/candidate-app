@@ -1,3 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 2rem;
+  align-items: center;
+}
+
 .filters {
   display: flex;
   flex-direction: row;
@@ -6,4 +14,25 @@
   align-items: flex-end;
   gap: 0.5rem;
   margin: 2rem;
+  max-width: 100%;
+}
+
+.job-listing {
+  display: flex;
+  flex-wrap: wrap;
+  align-self: center;
+  justify-content: space-between;
+  width: 60%;
+  gap: 1.8rem;
+}
+
+.dropdown,
+.searchBar {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown > label,
+.searchBar > label {
+  font-size: 14px;
 }
