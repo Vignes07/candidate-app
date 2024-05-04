@@ -1,8 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
 
 body {
-  display: flex;
-  justify-content: center;
   margin: auto;
   font-family: Lexend, serif;
 }

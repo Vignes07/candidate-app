@@ -5,7 +5,7 @@ import Job from "./components/Job.jsx";
 function JobListing({ data }) {
   return (
     <div className={"job-listing"}>
-      {data.map((job, i) => (
+      {data.map((job) => (
         <Job
           key={job.jdUid}
           companyName={job.companyName}

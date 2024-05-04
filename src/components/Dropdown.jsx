@@ -60,8 +60,6 @@ function DropDown({
     });
   }
 
-  console.log(selectedValues);
-
   return (
     <div className="dropdown" key={label}>
       {/*Show label when an option is selected*/}
