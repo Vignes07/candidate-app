@@ -5,7 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Avatar, CardHeader, styled } from "@mui/material";
+import { Avatar, CardHeader, Link, styled } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
 
 function capitalizeFirstLetterOfEachWord(string) {
@@ -25,6 +25,7 @@ function Job({
   jobDetailsFromCompany,
   minExp,
 }) {
+  // Custom Typography for Gradient blur of text
   const StyledTypography = styled(Typography)(() => ({
     maxWidth: 300,
     position: "relative",
@@ -40,6 +41,7 @@ function Job({
     },
   }));
 
+  // Custom Button
   const ColorButton = styled(Button)(() => ({
     backgroundColor: "#55EFC4",
     color: "#000000",
@@ -82,7 +84,7 @@ function Job({
         }
       />
       <CardContent sx={{ paddingY: 0 }}>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        <Typography sx={{ fontSize: 14 }} color="text.secondary">
           Estimated Salary: &#8377;
           {minJdSalary ? `${minJdSalary} - ${maxJdSalary}` : maxJdSalary} LPA
         </Typography>
@@ -95,9 +97,7 @@ function Job({
           justifyContent: "center",
         }}
       >
-        <Typography sx={{ fontWeight: [600] }} component="div">
-          About Company:
-        </Typography>
+        <Typography sx={{ fontWeight: [600] }}>About Company:</Typography>
         <Typography sx={{ fontWeight: [800] }}>About us</Typography>
         <StyledTypography
           sx={{ maxWidth: [300], maxHeight: [200] }}
@@ -105,19 +105,19 @@ function Job({
         >
           {jobDetailsFromCompany}
         </StyledTypography>
-        <Button sx={{ fontSize: 12 }}>{"View Job"}</Button>
+        <Link sx={{ fontSize: 12, alignSelf: "center" }} underline="none">
+          {"View Job"}
+        </Link>
       </CardContent>
       <CardContent sx={{ paddingY: 0 }}>
         <>
           <Typography
             sx={{ fontSize: 14, color: "#8b8b8b", fontWeight: [600] }}
-            color="text.secondary"
-            gutterBottom
           >
             Minimum Experience
           </Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {minExp ? minExp : 0} Years
+          <Typography sx={{ fontSize: 14 }} color="text.secondary">
+            {minExp ? minExp + " Years" : "Fresher"}
           </Typography>
         </>
       </CardContent>

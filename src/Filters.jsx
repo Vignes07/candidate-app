@@ -1,7 +1,8 @@
 import DropDown from "./components/Dropdown.jsx";
 import SearchBar from "./components/SearchBar.jsx";
+import PropTypes from "prop-types";
 
-function Filters() {
+function Filters({ onFiltersChange }) {
   const role = [
     { title: "Engineering", role: "Frontend" },
     { title: "Engineering", role: "Backend" },
@@ -63,50 +64,94 @@ function Filters() {
 
   const minSalary = ["10L", "20L", "30L", "40L", "50L", "60L", "70L"];
 
+  const techStack = [
+    "Python",
+    "Java",
+    "GoLang",
+    "Ruby/Rails",
+    "C++",
+    "Kotlin",
+    "Django",
+    "C#",
+    "GraphQL",
+    "Flask",
+    "Typescript",
+    "AWS",
+    "Javascript",
+    "Rust",
+    "NodeJS",
+    "React",
+  ];
+
   return (
     <div className={"filters"}>
       <DropDown
+        name={"jobRole"}
         label={"Roles"}
         placeholder={"Roles"}
         width={8}
         options={role}
         multiple={true}
+        setSelectedFilters={onFiltersChange}
       />
       <DropDown
+        name={"noOfEmployees"}
         label={"No Of Employees"}
         placeholder={"Number Of Employees"}
         width={13}
         options={noOfEmployees}
         multiple={true}
+        setSelectedFilters={onFiltersChange}
       />
       <DropDown
+        name={"minExp"}
         label={"Experience"}
         placeholder={"Experience"}
         width={8}
         options={experience}
         multiple={false}
+        setSelectedFilters={onFiltersChange}
       />
       <DropDown
+        name={"remote"}
         label={"Remote"}
         placeholder={"Remote"}
-        width={8}
+        width={7}
         options={modeOfWork}
         multiple={true}
+        setSelectedFilters={onFiltersChange}
       />
       <DropDown
+        name={"techStack"}
+        label={"Tech Stack"}
+        placeholder={"Tech Stack"}
+        width={8}
+        options={techStack}
+        multiple={true}
+        setSelectedFilters={onFiltersChange}
+      />
+      <DropDown
+        name={"minJdSalary"}
         label={"Min Base Pay"}
         placeholder={"Minimum Base Pay Salary"}
-        width={15}
+        width={12}
         options={minSalary}
         multiple={false}
+        setSelectedFilters={onFiltersChange}
       />
       <SearchBar
+        name={"companyName"}
         label={"Company Name"}
         placeholder={"Search Company Name"}
         width={12}
+        setSelectedFilters={onFiltersChange}
       />
     </div>
   );
 }
+
+Filters.propTypes = {
+  onFiltersChange: PropTypes.func.isRequired,
+};
 
 export default Filters;
