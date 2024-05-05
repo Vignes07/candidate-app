@@ -2,10 +2,11 @@ import "./App.css";
 import Filters from "./Filters.jsx";
 import JobListing from "./JobListing.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJobData } from "./reducers/jobReducer.js";
 import { selectAllJobs, selectLoading } from "./selectors/selector.js";
 import { CircularProgress } from "@mui/material";
+import LoadMore from "./components/loadMore.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -13,6 +14,10 @@ function App() {
   const loading = useSelector(selectLoading);
 
   const [filters, setFilters] = useState({});
+
+  const limitRef = useRef(9);
+
+  const [fetching, setFetching] = useState(false);
 
   const filteredData =
     Object.keys(filters).length === 0
@@ -46,14 +51,8 @@ function App() {
               });
             } else {
               if (typeof filters[key] === "number") {
-                // If the key is salary value must be greater than or equal to filter
-                if (key === "minJdSalary") {
-                  return job[key] >= filters[key];
-                }
-                // If the key is experience value must be less than or equal to filter
-                else {
-                  return job[key] <= filters[key];
-                }
+                // value must be greater than or equal to filter
+                return job[key] >= filters[key];
               } else {
                 return job[key]
                   ?.toString()
@@ -65,18 +64,52 @@ function App() {
         });
 
   // Fetch Data on render
+  // Fetch Data on filter change
   useEffect(() => {
-    dispatch(fetchJobData());
-  }, [dispatch]);
+    limitRef.current = 9; // Reset limit
+    dispatch(fetchJobData({ limit: limitRef.current, filters: filters }));
+  }, [dispatch, filters]);
+
+  function handleLoadMOre() {
+    limitRef.current += 9;
+    setFetching(true);
+    dispatch(
+      fetchJobData({ limit: limitRef.current, offset: 0, filters: filters })
+    );
+  }
+
+  //Infinite Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } =
+        document.documentElement;
+      if (!fetching && scrollTop + clientHeight >= scrollHeight) {
+        limitRef.current += 9;
+        setFetching(true);
+        dispatch(
+          fetchJobData({ limit: limitRef.current, offset: 0, filters: filters })
+        );
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [dispatch, fetching, filters]);
+
+  useEffect(() => {
+    if (!loading) {
+      setFetching(false);
+    }
+  }, [loading]);
 
   return (
     <div className={"container"}>
       <Filters onFiltersChange={setFilters} />
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        data && <JobListing data={filteredData} />
-      )}
+      {data && <JobListing data={filteredData} />}
+      <br />
+      {loading ? <CircularProgress /> : <LoadMore loadMore={handleLoadMOre} />}
     </div>
   );
 }
