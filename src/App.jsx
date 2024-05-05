@@ -1,12 +1,18 @@
-import "./App.css";
-import Filters from "./Filters.jsx";
-import JobListing from "./JobListing.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense, lazy } from "react";
+
 import { fetchJobData } from "./reducers/jobReducer.js";
 import { selectAllJobs, selectLoading } from "./selectors/selector.js";
-import { CircularProgress } from "@mui/material";
+
+import Filters from "./Filters.jsx";
 import LoadMore from "./components/LoadMore.jsx";
+// import JobListing from "./JobListing.jsx";
+
+import { CircularProgress } from "@mui/material";
+
+import "./App.css";
+
+const JobListing = lazy(() => import("./JobListing"));
 
 function App() {
   const dispatch = useDispatch();
@@ -18,6 +24,8 @@ function App() {
   const limitRef = useRef(0);
 
   const [fetching, setFetching] = useState(false);
+
+  const [jobListingLoaded, setJobListingLoaded] = useState(false);
 
   const filteredData =
     Object.keys(filters).length === 0
@@ -46,7 +54,7 @@ function App() {
                     return filterItem.role.toLowerCase().includes(job[key]);
                   }
                 } else {
-                  return filterItem && filterItem.toString().includes(job[key]);
+                  return filterItem?.toString().includes(job[key]);
                 }
               });
             } else {
@@ -63,6 +71,41 @@ function App() {
           });
         });
 
+  // Throttling
+  function throttle(func, limit) {
+    let inThrottle;
+    return function () {
+      const args = arguments;
+      const context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  }
+
+  // Debouncing
+  function debounce(func, delay) {
+    let debounceTimer;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  function handleLoadMore() {
+    limitRef.current += 9;
+    setFetching(true);
+    dispatch(
+      fetchJobData({ limit: limitRef.current, offset: 0, filters: filters })
+    );
+  }
+
+  const throttledHandleLoadMore = throttle(handleLoadMore, 1000);
+
   // Fetch Data on render
   // Fetch Data on filter change
   // useEffect(() => {
@@ -77,17 +120,9 @@ function App() {
     }
   }, [dispatch, filters, filteredData, data.length]);
 
-  function handleLoadMore() {
-    limitRef.current += 9;
-    setFetching(true);
-    dispatch(
-      fetchJobData({ limit: limitRef.current, offset: 0, filters: filters })
-    );
-  }
-
   //Infinite Scroll
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = debounce(() => {
       const { scrollTop, clientHeight, scrollHeight } =
         document.documentElement;
       if (!fetching && scrollTop + clientHeight >= scrollHeight) {
@@ -97,7 +132,7 @@ function App() {
           fetchJobData({ limit: limitRef.current, offset: 0, filters: filters })
         );
       }
-    };
+    }, 500);
 
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -114,9 +149,21 @@ function App() {
   return (
     <div className={"container"}>
       <Filters onFiltersChange={setFilters} />
-      {data && <JobListing data={filteredData} />}
+      <Suspense fallback={<CircularProgress />}>
+        {data && (
+          <JobListing
+            data={filteredData}
+            onLoaded={() => setJobListingLoaded(true)}
+          />
+        )}
+      </Suspense>
       <br />
-      {loading ? <CircularProgress /> : <LoadMore loadMore={handleLoadMore} />}
+      {/* Only show the CircularProgress component when loading is true and jobListingLoaded is also true */}
+      {loading && jobListingLoaded ? <CircularProgress /> : null}
+      {/* Only show the LoadMore component when jobListingLoaded is true and loading is false */}
+      {jobListingLoaded && !loading ? (
+        <LoadMore loadMore={throttledHandleLoadMore} />
+      ) : null}
     </div>
   );
 }

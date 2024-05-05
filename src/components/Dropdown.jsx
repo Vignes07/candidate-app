@@ -98,6 +98,9 @@ function DropDown({
             : "";
         }}
         // Checks the equality between option and value
+        // isOptionEqualToValue={(option, value) =>
+        //     option.title === value.title && option.role === value.role
+        // }
         onChange={handleChange}
         renderInput={(params) => (
           <TextField

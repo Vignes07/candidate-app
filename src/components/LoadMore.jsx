@@ -1,6 +1,7 @@
+import PropTypes from "prop-types";
+
 import ReplayIcon from "@mui/icons-material/Replay";
 import Button from "@mui/material/Button";
-import PropTypes from "prop-types";
 
 function LoadMore({ loadMore }) {
   return (

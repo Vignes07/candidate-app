@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import Card from "@mui/material/Card";
@@ -6,8 +6,9 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Avatar, CardHeader, Link, styled } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
+import { Avatar, CardHeader, Link, styled } from "@mui/material";
+
 import ShowMore from "./ShowMore.jsx";
 
 function capitalizeFirstLetterOfEachWord(string) {
@@ -16,6 +17,35 @@ function capitalizeFirstLetterOfEachWord(string) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+// Custom Typography for Gradient blur of text
+const StyledTypography = styled(Typography)(() => ({
+  maxWidth: 300,
+  position: "relative",
+  overflow: "hidden",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    height: "50%",
+    background: "linear-gradient(transparent, white)",
+  },
+}));
+
+// Custom Button
+const ColorButton = styled(Button)(() => ({
+  backgroundColor: "#55EFC4",
+  color: "#000000",
+  fontWeight: [600],
+  borderRadius: 7,
+  width: "100%",
+  boxShadow: "none",
+  "&:hover": {
+    backgroundColor: "#55EFC4",
+  },
+}));
 
 function Job({
   companyName,
@@ -27,35 +57,6 @@ function Job({
   jobDetailsFromCompany,
   minExp,
 }) {
-  // Custom Typography for Gradient blur of text
-  const StyledTypography = styled(Typography)(() => ({
-    maxWidth: 300,
-    position: "relative",
-    overflow: "hidden",
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      width: "100%",
-      height: "50%",
-      background: "linear-gradient(transparent, white)",
-    },
-  }));
-
-  // Custom Button
-  const ColorButton = styled(Button)(() => ({
-    backgroundColor: "#55EFC4",
-    color: "#000000",
-    fontWeight: [600],
-    borderRadius: 7,
-    width: "100%",
-    boxShadow: "none",
-    "&:hover": {
-      backgroundColor: "#55EFC4",
-    },
-  }));
-
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {

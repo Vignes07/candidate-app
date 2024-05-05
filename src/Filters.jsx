@@ -1,4 +1,4 @@
-import DropDown from "./components/Dropdown.jsx";
+import DropDown from "./components/DropDown.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import PropTypes from "prop-types";
 

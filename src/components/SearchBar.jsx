@@ -1,7 +1,7 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
 
 function SearchBar({ name, label, placeholder, width, setSelectedFilters }) {
   const [companyName, setCompanyName] = useState("");
