@@ -1,3 +1,4 @@
+import * as React from "react";
 import PropTypes from "prop-types";
 
 import Card from "@mui/material/Card";
@@ -7,6 +8,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Avatar, CardHeader, Link, styled } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
+import ShowMore from "./ShowMore.jsx";
 
 function capitalizeFirstLetterOfEachWord(string) {
   return string
@@ -53,6 +55,16 @@ function Job({
       backgroundColor: "#55EFC4",
     },
   }));
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Card
@@ -105,9 +117,18 @@ function Job({
         >
           {jobDetailsFromCompany}
         </StyledTypography>
-        <Link sx={{ fontSize: 12, alignSelf: "center" }} underline="none">
-          {"View Job"}
+        <Link
+          sx={{ fontSize: 12, alignSelf: "center", cursor: "pointer" }}
+          underline="none"
+          onClick={handleClickOpen}
+        >
+          Show More
         </Link>
+        <ShowMore
+          open={open}
+          handleClose={handleClose}
+          aboutUs={jobDetailsFromCompany}
+        />
       </CardContent>
       <CardContent sx={{ paddingY: 0 }}>
         <>
@@ -131,7 +152,7 @@ function Job({
   );
 }
 
-Card.propTypes = {
+Job.propTypes = {
   logoUrl: PropTypes.string.isRequired,
   companyName: PropTypes.string.isRequired,
   jobRole: PropTypes.string.isRequired,

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { fetchJobData } from "./reducers/jobReducer.js";
 import { selectAllJobs, selectLoading } from "./selectors/selector.js";
 import { CircularProgress } from "@mui/material";
-import LoadMore from "./components/loadMore.jsx";
+import LoadMore from "./components/LoadMore.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ function App() {
 
   const [filters, setFilters] = useState({});
 
-  const limitRef = useRef(9);
+  const limitRef = useRef(0);
 
   const [fetching, setFetching] = useState(false);
 
@@ -65,12 +65,19 @@ function App() {
 
   // Fetch Data on render
   // Fetch Data on filter change
-  useEffect(() => {
-    limitRef.current = 9; // Reset limit
-    dispatch(fetchJobData({ limit: limitRef.current, filters: filters }));
-  }, [dispatch, filters]);
+  // useEffect(() => {
+  //     limitRef.current = 9; // Reset limit
+  //     dispatch(fetchJobData({limit: limitRef.current, filters: filters}));
+  // }, [dispatch, filters]);
 
-  function handleLoadMOre() {
+  useEffect(() => {
+    if (filteredData.length < 9) {
+      limitRef.current += 9; // Increase limit
+      dispatch(fetchJobData({ limit: limitRef.current, filters: filters }));
+    }
+  }, [dispatch, filters, filteredData, data.length]);
+
+  function handleLoadMore() {
     limitRef.current += 9;
     setFetching(true);
     dispatch(
@@ -109,7 +116,7 @@ function App() {
       <Filters onFiltersChange={setFilters} />
       {data && <JobListing data={filteredData} />}
       <br />
-      {loading ? <CircularProgress /> : <LoadMore loadMore={handleLoadMOre} />}
+      {loading ? <CircularProgress /> : <LoadMore loadMore={handleLoadMore} />}
     </div>
   );
 }
